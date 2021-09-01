@@ -1,38 +1,35 @@
 from PIL import Image
 import numpy as np
 
+def get_average_color(left, right, upper, lower):
+	r, g, b = 0, 0, 0
+	for x in range(left, right):
+		for y in range(upper, lower):
+			r += image.getpixel((x, y))[0]
+			g += image.getpixel((x, y))[1]
+			b += image.getpixel((x, y))[2]
+	pixel_count = chunk_width*chunk_height
+	r = int(r/pixel_count)
+	g = int(g/pixel_count)
+	b = int(b/pixel_count)
+	return (r, g, b)
+
 image = Image.open('images/image3.jpg')
 
-amount_of_chunks = 2
+dimension = 3456
 
-chunks = np.empty([amount_of_chunks, amount_of_chunks], dtype=object)
+chunk_width = int(image.width/dimension)
+chunk_height = int(image.height/dimension)
 
-chunk_height = int(image.height/amount_of_chunks)
-chunk_width = int(image.width/amount_of_chunks)
+chunk_averages = np.empty([dimension, dimension], dtype=object)
 
-for x in range(0, amount_of_chunks):
-	for y in range(0, amount_of_chunks):
-		chunks[x, y] = image.crop((x*chunk_width, y*chunk_height, x*chunk_width + chunk_width, y*chunk_height + chunk_height))
+for x in range(0, dimension):
+	for y in range(0, dimension):
+		left, right, upper, lower = x*chunk_width, x*chunk_width + chunk_width, y*chunk_height, y*chunk_height + chunk_height
+		average_color = get_average_color(left, right, upper, lower)
+		chunk_averages[x, y] = average_color
 
-chunk_averages = np.empty([amount_of_chunks, amount_of_chunks], dtype=object)
-
-for row in range(0, chunks.shape[0]):
-	for col in range(0, chunks.shape[1]):
-		curr_chunk = chunks[row, col]
-		r, g, b = 0, 0, 0
-		for x in range(curr_chunk.width):
-			for y in range(curr_chunk.height):
-				r += curr_chunk.getpixel((x, y))[0]
-				g += curr_chunk.getpixel((x, y))[1]
-				b += curr_chunk.getpixel((x, y))[2]
-		pixel_count = curr_chunk.width*curr_chunk.height
-		r = int(r/pixel_count)
-		g = int(g/pixel_count)
-		b = int(b/pixel_count)
-		chunk_averages[row, col] = (r, g, b)
-
-legofied_image = Image.new('RGB', (amount_of_chunks, amount_of_chunks))
-
+legofied_image = Image.new('RGB', (dimension, dimension))
 for row in range(0, chunk_averages.shape[0]):
 	for col in range(0, chunk_averages.shape[1]):
 		legofied_image.putpixel((row, col), chunk_averages[row, col])
