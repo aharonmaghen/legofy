@@ -2,16 +2,19 @@ from PIL import Image
 import numpy as np
 
 image = Image.open('images/image3.jpg')
-chunks = np.empty([10, 10], dtype=object)
 
-chunk_height = int(image.height/10)
-chunk_width = int(image.width/10)
+amount_of_chunks = 2
 
-for x in range(0, 10):
-	for y in range(0, 10):
-		chunks[x, y] = image.crop((y*chunk_width, x*chunk_height, y*chunk_width + chunk_width, x*chunk_height + chunk_height))
+chunks = np.empty([amount_of_chunks, amount_of_chunks], dtype=object)
 
-chunk_averages = np.empty([10, 10], dtype=object)
+chunk_height = int(image.height/amount_of_chunks)
+chunk_width = int(image.width/amount_of_chunks)
+
+for x in range(0, amount_of_chunks):
+	for y in range(0, amount_of_chunks):
+		chunks[x, y] = image.crop((x*chunk_width, y*chunk_height, x*chunk_width + chunk_width, y*chunk_height + chunk_height))
+
+chunk_averages = np.empty([amount_of_chunks, amount_of_chunks], dtype=object)
 
 for row in range(0, chunks.shape[0]):
 	for col in range(0, chunks.shape[1]):
@@ -28,7 +31,7 @@ for row in range(0, chunks.shape[0]):
 		b = int(b/pixel_count)
 		chunk_averages[row, col] = (r, g, b)
 
-legofied_image = Image.new('RGB', (10, 10))
+legofied_image = Image.new('RGB', (amount_of_chunks, amount_of_chunks))
 
 for row in range(0, chunk_averages.shape[0]):
 	for col in range(0, chunk_averages.shape[1]):
