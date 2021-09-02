@@ -35,7 +35,7 @@ class LegoColors:
 			r2, g2, b2 = lego_colors.get(color)[0], lego_colors.get(color)[1], lego_colors.get(color)[2]
 			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), color))
 		
-		return min(distances)
+		return lego_colors.get(min(distances)[1])
 
 
 	@staticmethod
