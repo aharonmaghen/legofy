@@ -18,9 +18,9 @@ class LegoColors:
 		"Medium Azur": (96, 160, 185),
 		"Bright Orange": (218, 125, 41),
 		"Bright Red": (188, 7, 6),
-		"Black": (47, 47, 47),
+		"Black": (0, 0, 0),
 		"Bright Yellow": (243, 194, 0),
-		"White": (212, 216, 217),
+		"White": (255, 255, 255),
 		"Medium Lavender": (140, 97, 161),
 		"Bright Reddish Violet": (141, 59, 121)
 	}
