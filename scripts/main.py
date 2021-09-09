@@ -1,6 +1,7 @@
-from PIL import Image
-import numpy as np
 from _LegoHelper import LegoColors as lc
+from math import sqrt
+import numpy as np
+from PIL import Image
 
 def get_average_color(left, right, upper, lower):
 	r, g, b = 0, 0, 0
@@ -15,22 +16,28 @@ def get_average_color(left, right, upper, lower):
 	b = int(b/pixel_count)
 	return (r, g, b)
 
+def get_dimesions(image, pieces):
+	division_factor = sqrt(image.width*image.height/pieces)
+	return (int(image.width/division_factor), int(image.height/division_factor))
+
 image = Image.open('images/image3.jpg')
 
-dimension = 75
+pieces = 20000
+dimensions = get_dimesions(image, pieces)
+print(dimensions)
 
-chunk_width = int(image.width/dimension)
-chunk_height = int(image.height/dimension)
+chunk_width = int(image.width/dimensions[0])
+chunk_height = int(image.height/dimensions[1])
 
-chunk_averages = np.empty([dimension, dimension], dtype=object)
+chunk_averages = np.empty([dimensions[0], dimensions[1]], dtype=object)
 
-for x in range(0, dimension):
-	for y in range(0, dimension):
+for x in range(0, dimensions[0]):
+	for y in range(0, dimensions[1]):
 		left, right, upper, lower = x*chunk_width, x*chunk_width + chunk_width, y*chunk_height, y*chunk_height + chunk_height
 		average_color = get_average_color(left, right, upper, lower)
 		chunk_averages[x, y] = average_color
 
-legofied_image = Image.new('RGB', (dimension, dimension))
+legofied_image = Image.new('RGB', (dimensions[0], dimensions[1]))
 for row in range(0, chunk_averages.shape[0]):
 	for col in range(0, chunk_averages.shape[1]):
 		best_lego_color = lc.get_lego_color(chunk_averages[row, col])
