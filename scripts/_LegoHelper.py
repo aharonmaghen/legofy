@@ -1,5 +1,9 @@
-class LegoColors:
-	__lego_colors = {
+from math import sqrt
+from PIL import Image
+class _LegoHelper:
+	global lego_colors
+	
+	lego_colors = {
 		"Cool Yellow": (254, 255, 135),
 		"Bright Bluish Green": (37, 168, 164),
 		"Medium Lilac": (135, 109, 200),
@@ -24,22 +28,17 @@ class LegoColors:
 		"Medium Lavender": (140, 97, 161),
 		"Bright Reddish Violet": (141, 59, 121)
 	}
-	@staticmethod
+
 	def get_lego_color(rgb):
-		from math import sqrt
-		lego_colors = LegoColors.__lego_colors
 		distances = []
 
 		r1, g1, b1 = rgb[0], rgb[1], rgb[2]
-		for color in lego_colors:
-			r2, g2, b2 = lego_colors.get(color)[0], lego_colors.get(color)[1], lego_colors.get(color)[2]
-			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), color))
+		for key, value in lego_colors:
+			r2, g2, b2 = value[0], value[1], value[2]
+			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), key))
 		
 		return lego_colors.get(min(distances)[1])
 
-
-	@staticmethod
-	def __show_lego_colors():
-		from PIL import Image
-		for color in LegoColors.__lego_colors:
-			Image.new('RGB', (200, 200), LegoColors.__lego_colors.get(color)).show()
+	def show_lego_colors():
+		for color in lego_colors:
+			Image.new('RGB', (200, 200), lego_colors.get(color)).show()
