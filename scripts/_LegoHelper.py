@@ -1,6 +1,6 @@
 from math import sqrt
 from PIL import Image
-class _LegoHelper:
+class LegoColors:
 	global lego_colors
 	
 	lego_colors = {
@@ -33,9 +33,10 @@ class _LegoHelper:
 		distances = []
 
 		r1, g1, b1 = rgb[0], rgb[1], rgb[2]
-		for key, value in lego_colors:
-			r2, g2, b2 = value[0], value[1], value[2]
-			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), key))
+		for color in lego_colors.items():
+			print(color)
+			r2, g2, b2 = color[1][0], color[1][1], color[1][2]
+			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), color[0]))
 		
 		return lego_colors.get(min(distances)[1])
 
