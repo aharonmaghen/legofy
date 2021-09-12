@@ -1,7 +1,9 @@
-from PIL import Image
+from _LegoHelper import LegoColors as lc
+from math import sqrt
 import numpy as np
+from PIL import Image
 
-def get_average_color(left, right, upper, lower):
+def get_average_color(left, upper, right, lower):
 	r, g, b = 0, 0, 0
 	for x in range(left, right):
 		for y in range(upper, lower):
@@ -14,24 +16,30 @@ def get_average_color(left, right, upper, lower):
 	b = int(b/pixel_count)
 	return (r, g, b)
 
-image = Image.open('images/image3.jpg')
+def get_dimesions(image, pieces):
+	division_factor = sqrt(image.width*image.height/pieces)
+	return (int(image.width/division_factor), int(image.height/division_factor))
 
-dimension = 3456
+image = Image.open('images/image10.jpeg')
 
-chunk_width = int(image.width/dimension)
-chunk_height = int(image.height/dimension)
+pieces = 1000
+dimensions = get_dimesions(image, pieces)
 
-chunk_averages = np.empty([dimension, dimension], dtype=object)
+chunk_width = int(image.width/dimensions[0])
+chunk_height = int(image.height/dimensions[1])
 
-for x in range(0, dimension):
-	for y in range(0, dimension):
-		left, right, upper, lower = x*chunk_width, x*chunk_width + chunk_width, y*chunk_height, y*chunk_height + chunk_height
-		average_color = get_average_color(left, right, upper, lower)
+chunk_averages = np.empty([dimensions[0], dimensions[1]], dtype=object)
+
+for x in range(0, dimensions[0]):
+	for y in range(0, dimensions[1]):
+		left, upper, right, lower = x*chunk_width, y*chunk_height, x*chunk_width + chunk_width,  y*chunk_height + chunk_height
+		average_color = get_average_color(left, upper, right, lower)
 		chunk_averages[x, y] = average_color
 
-legofied_image = Image.new('RGB', (dimension, dimension))
+legofied_image = Image.new('RGB', (dimensions[0], dimensions[1]))
 for row in range(0, chunk_averages.shape[0]):
 	for col in range(0, chunk_averages.shape[1]):
-		legofied_image.putpixel((row, col), chunk_averages[row, col])
+		best_lego_color = lc.get_lego_color(chunk_averages[row, col])
+		legofied_image.putpixel((row, col), best_lego_color)
 
 legofied_image.show()
