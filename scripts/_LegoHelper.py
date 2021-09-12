@@ -38,6 +38,10 @@ class LegoColors:
 			distances.append((sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2), color[0]))
 		
 		return lego_colors.get(min(distances)[1])
+	get_lego_color.__doc__ = """
+							Computes the Euclidean distances between color passed in and every lego color in dict. 
+							Returns the cloeset one
+							"""
 
 	def show_lego_colors():
 		for color in lego_colors:
